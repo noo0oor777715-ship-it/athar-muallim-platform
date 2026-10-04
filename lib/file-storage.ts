@@ -37,12 +37,12 @@ export function getStorageUrl(fileName: string) {
   return `/uploads/${fileName}`;
 }
 
-export function saveUploadedFile(file: File) {
+export async function saveUploadedFile(file: File) {
   const dir = getUploadDir();
   const mime = normalizeFileType(file);
   const name = safeFileName(file.name);
-  const bytes = Buffer.from(await file.arrayBuffer());
   const filePath = path.join(dir, name);
+  const bytes = Buffer.from(await file.arrayBuffer());
   fs.writeFileSync(filePath, bytes);
 
   return {
