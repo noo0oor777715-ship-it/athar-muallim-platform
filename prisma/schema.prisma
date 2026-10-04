@@ -1,0 +1,120 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  passwordHash  String
+  role          Role      @default(VIEWER)
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  auditLogs     AuditLog[]
+}
+
+enum Role {
+  SUPER_ADMIN
+  CONTENT_SUPERVISOR
+  SUPPORT_AGENT
+  VIEWER
+}
+
+model PageContent {
+  id         String   @id @default(cuid())
+  key        String   @unique
+  title      String
+  body       String
+  imageUrl   String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Post {
+  id                String       @id @default(cuid())
+  authorName        String
+  authorAlias       String?
+  category          String
+  teacherName       String?
+  title             String
+  content           String
+  publishName       Boolean      @default(false)
+  status            PostStatus   @default(PENDING)
+  moderationNotes   String?
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  attachments       Attachment[]
+  auditLogs         AuditLog[]
+}
+
+enum PostStatus {
+  RECEIVED
+  PENDING
+  APPROVED
+  REJECTED
+  NEEDS_CHANGES
+  PUBLISHED
+  HIDDEN
+}
+
+model Attachment {
+  id          String   @id @default(cuid())
+  postId      String
+  fileName    String
+  originalName String
+  mimeType    String
+  fileSize    Int
+  url         String
+  kind        String
+  createdAt   DateTime @default(now())
+
+  post        Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model Feedback {
+  id          String   @id @default(cuid())
+  ease        Int
+  design      Int
+  clarity     Int
+  accessibility Int
+  usefulness  Int
+  suggestion  String?
+  createdAt   DateTime @default(now())
+}
+
+model SupportRequest {
+  id          String   @id @default(cuid())
+  name        String?
+  email       String?
+  message     String
+  status      String   @default("OPEN")
+  createdAt   DateTime @default(now())
+}
+
+model Metric {
+  id          String   @id @default(cuid())
+  label       String
+  value       Int
+  createdAt   DateTime @default(now())
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  userId      String?
+  userName    String?
+  action      String
+  targetType  String?
+  targetId    String?
+  details     String?
+  createdAt   DateTime @default(now())
+
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  post        Post?    @relation(fields: [targetId], references: [id], onDelete: SetNull)
+}
