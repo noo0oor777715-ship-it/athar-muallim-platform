@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand-green: #2f6e40;
+  --brand-green-deep: #173d27;
+  --gold-soft: #d5af58;
+  --ivory: #f8f3ee;
+  --page-bg: #f6f6f2;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--page-bg);
+  color: #0f172a;
+  font-family: 'Tahoma', 'Segoe UI', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button, input, select, textarea {
+  font: inherit;
+}
+
+.container-shell {
+  @apply mx-auto max-w-6xl px-4;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.accent-card {
+  background: linear-gradient(135deg, rgba(47,110,64,0.08), rgba(213,175,88,0.12));
+}
